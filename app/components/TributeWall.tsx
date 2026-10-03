@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { supabase } from "../lib/supabase";
 
 type Tribute = {
@@ -151,9 +152,12 @@ export default function TributeWall() {
                     </p>
                   </div>
 
-                  <span className="text-xs font-black text-[#d6ff00]">
-                    {tribute.tribute_id}
-                  </span>
+                  <Link
+  href={`/tribute/${tribute.tribute_id}`}
+  className="text-xs font-black text-[#d6ff00] hover:underline"
+>
+  {tribute.tribute_id} →
+</Link>
 
                 </div>
 
