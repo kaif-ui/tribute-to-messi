@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 
@@ -11,7 +11,7 @@ type Tribute = {
   message: string;
 };
 
-export default function TributeCardUPIPage() {
+function TributeCardUPIContent() {
   const searchParams = useSearchParams();
   const tributeId = searchParams.get("tributeId") || "";
 
@@ -24,7 +24,10 @@ export default function TributeCardUPIPage() {
 
   useEffect(() => {
     async function loadTribute() {
-      if (!tributeId) return;
+      if (!tributeId) {
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from("tributes")
@@ -226,5 +229,21 @@ export default function TributeCardUPIPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function TributeCardUPIPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+          <p className="text-white/50">
+            Loading payment page...
+          </p>
+        </main>
+      }
+    >
+      <TributeCardUPIContent />
+    </Suspense>
   );
 }

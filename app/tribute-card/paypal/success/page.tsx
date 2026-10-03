@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function TributeCardPayPalSuccessPage() {
+function PayPalSuccessContent() {
   const searchParams = useSearchParams();
 
   const tributeId = searchParams.get("tributeId") || "";
@@ -97,5 +97,21 @@ export default function TributeCardPayPalSuccessPage() {
         </a>
       </div>
     </main>
+  );
+}
+
+export default function TributeCardPayPalSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-black px-5 text-white">
+          <p className="text-white/60">
+            Loading payment verification...
+          </p>
+        </main>
+      }
+    >
+      <PayPalSuccessContent />
+    </Suspense>
   );
 }
