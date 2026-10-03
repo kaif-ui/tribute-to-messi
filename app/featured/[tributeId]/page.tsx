@@ -98,14 +98,37 @@ export default async function FeaturedTributePage({
   🇮🇳 Pay ₹499 with UPI
 </a>
 
-          <a
-  href="https://www.paypal.com/ncp/payment/JXYTFMDU4MWQN"
-  target="_blank"
-  rel="noopener noreferrer"
+ <button
+  type="button"
+  onClick={async () => {
+    try {
+      const response = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tributeId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Unable to start PayPal checkout.");
+        return;
+      }
+
+      window.location.href = data.approvalUrl;
+    } catch (error) {
+      console.error("PAYPAL CHECKOUT ERROR:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  }}
   className="rounded-full border border-white/20 px-6 py-4 text-center font-black transition hover:bg-white hover:text-black"
 >
   🌍 Pay $6.99 with PayPal
-</a>
+</button>
         </div>
 
         <p className="mt-6 text-center text-xs leading-5 text-white/30">
