@@ -109,6 +109,12 @@ export default function TributePage() {
           >
             Leave Your Own Message →
           </a>
+          <a
+  href={`/tribute-card?tributeId=${tribute.tribute_id}`}
+  className="mt-4 inline-block rounded-full border border-[#d6ff00] px-7 py-4 text-sm font-black text-[#d6ff00] transition hover:bg-[#d6ff00] hover:text-black"
+>
+  Create My Tribute Card →
+</a>
           <div className="mt-6 flex flex-wrap gap-3">
  <a
   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
