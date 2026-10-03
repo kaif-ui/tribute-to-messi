@@ -129,6 +129,27 @@ export async function POST(request: Request) {
           { status: 500 }
         );
       }
+      const { error: featureError } = await supabaseAdmin
+  .from("tributes")
+  .update({
+    is_featured: true,
+  })
+  .eq("tribute_id", tributeId);
+
+if (featureError) {
+  console.error(
+    "FEATURED TRIBUTE UPDATE ERROR:",
+    featureError
+  );
+
+  return Response.json(
+    {
+      error:
+        "Payment was saved, but the tribute could not be marked as featured.",
+    },
+    { status: 500 }
+  );
+}
     }
 
     return Response.json({
