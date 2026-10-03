@@ -81,6 +81,16 @@ export async function POST(request: Request) {
 
     const paymentStatus = captureData.status;
 
+    if (paymentStatus !== "COMPLETED") {
+  return Response.json(
+    {
+      success: false,
+      status: paymentStatus,
+      error: "PayPal payment was not completed.",
+    },
+    { status: 400 }
+  );
+}
     console.log("PAYPAL CAPTURE SUCCESS:", {
       orderId,
       tributeId,
