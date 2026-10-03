@@ -152,12 +152,12 @@ export default function TributeWall() {
                     </p>
                   </div>
 
-                  <Link
+                  <a
   href={`/tribute/${tribute.tribute_id}`}
   className="text-xs font-black text-[#d6ff00] hover:underline"
 >
   {tribute.tribute_id} →
-</Link>
+</a>
 
                 </div>
 
