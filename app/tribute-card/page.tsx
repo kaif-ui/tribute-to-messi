@@ -1,5 +1,14 @@
+export const dynamic = "force-dynamic";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+import TributeCard from "./TributeCard";
+import PayPalButton from "../components/PayPalButton";
 
 export default async function TributeCardPage({
   searchParams,
@@ -37,6 +46,21 @@ export default async function TributeCardPage({
     .eq("tribute_id", tributeId)
     .eq("status", "approved")
     .single();
+    const {
+  data: paidCardPayment,
+  error: paidCardPaymentError,
+} = await supabaseAdmin
+  .from("tribute_card_payments")
+  .select("id")
+  .eq("tribute_id", tributeId)
+  .eq("status", "paid")
+  .limit(1)
+  .maybeSingle();
+
+console.log("PAID CARD PAYMENT:", paidCardPayment);
+console.log("PAID CARD PAYMENT ERROR:", paidCardPaymentError);
+
+const isPaid = !!paidCardPayment;
 
   if (error || !tribute) {
     return (
@@ -132,10 +156,41 @@ export default async function TributeCardPage({
               Tribute {tribute.tribute_id}
             </p>
           </div>
+{isPaid ? (
+  <TributeCard
+    fanName={tribute.fan_name}
+    countryName={tribute.country_name}
+    message={tribute.message}
+    tributeId={tribute.tribute_id}
+  />
+) : (
+  <div className="mt-8 rounded-3xl border border-[#d6ff00]/20 bg-white/[0.03] p-8 text-center">
+    <p className="text-sm font-black uppercase tracking-[0.2em] text-[#d6ff00]">
+      Your Card Is Ready
+    </p>
 
-          <p className="mt-8 text-center text-sm text-white/40">
-            Payment options will be connected next.
-          </p>
+    <h3 className="mt-4 text-3xl font-black">
+      Unlock your personalized card.
+    </h3>
+
+    <p className="mt-3 text-sm leading-6 text-white/50">
+      Complete your ₹299 UPI or $4.99 PayPal payment to unlock the
+      downloadable Tribute Card.
+    </p>
+  </div>
+)}
+          <a
+  href={`/tribute-card/upi?tributeId=${tribute.tribute_id}`}
+  className="mt-8 block w-full rounded-full bg-[#d6ff00] px-6 py-4 text-center font-black text-black transition hover:scale-[1.01]"
+>
+  🇮🇳 Pay ₹299 with UPI →
+</a>
+<div className="mt-4">
+  <PayPalButton
+  tributeId={tribute.tribute_id}
+  product="card"
+/>
+</div>
         </div>
       </div>
     </main>

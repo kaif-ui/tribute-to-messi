@@ -2,14 +2,21 @@
 
 type PayPalButtonProps = {
   tributeId: string;
+  product?: "featured" | "card";
 };
 
 export default function PayPalButton({
   tributeId,
+  product = "featured",
 }: PayPalButtonProps) {
   async function handlePayPalCheckout() {
     try {
-      const response = await fetch("/api/paypal/create-order", {
+      const endpoint =
+        product === "card"
+          ? "/api/paypal/create-card-order"
+          : "/api/paypal/create-order";
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,7 +29,9 @@ export default function PayPalButton({
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.error || "Unable to start PayPal checkout.");
+        alert(
+          data.error || "Unable to start PayPal checkout."
+        );
         return;
       }
 
@@ -37,9 +46,11 @@ export default function PayPalButton({
     <button
       type="button"
       onClick={handlePayPalCheckout}
-      className="rounded-full border border-white/20 px-6 py-4 text-center font-black transition hover:bg-white hover:text-black"
+      className="w-full rounded-full border border-white/20 px-6 py-4 text-center font-black transition hover:bg-white hover:text-black"
     >
-      🌍 Pay $6.99 with PayPal
+      {product === "card"
+        ? "🌍 Pay $4.99 with PayPal"
+        : "🌍 Pay $6.99 with PayPal"}
     </button>
   );
 }
