@@ -98,10 +98,15 @@ export async function POST(request: Request) {
     if (!orderResponse.ok) {
       console.error("PAYPAL CREATE ORDER ERROR:", orderData);
 
-      return Response.json(
-        { error: "Unable to create PayPal order." },
-        { status: 500 }
-      );
+return Response.json(
+  {
+    error:
+      orderData?.message ||
+      orderData?.details?.[0]?.description ||
+      "Unable to create PayPal order.",
+  },
+  { status: 500 }
+);
     }
 
     const approvalLink = orderData.links?.find(
